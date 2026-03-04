@@ -4,7 +4,7 @@ from socfaker import SocFaker
 
 sc = SocFaker()
 
-header = ['Summary', 'Signature', 'Timestamp', 'Type', 'Status', 'Direction', 'Location', 'Source_IP']
+header = ['Summary', 'Signature', 'Timestamp', 'Type', 'Status', 'Direction', 'Location']
 
 alert_data = []
 for _ in range(10):
@@ -15,8 +15,7 @@ for _ in range(10):
          sc.alert.type,
          sc.alert.status,
          sc.alert.direction,
-         sc.alert.location,
-         sc.network.source.ip
+         sc.alert.location
     ]
     alert_data.append(row)
 
