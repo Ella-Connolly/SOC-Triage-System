@@ -7,7 +7,7 @@ summary = df.groupby('Location').size().reset_index(name='Alert_Count')
 priorities = []
 
 for count in summary['Alert_Count']:
-    if count > 2:
+    if count > 3:
         priorities.append('HIGH')
     else:
         priorities.append('Low/Medium')
