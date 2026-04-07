@@ -39,4 +39,16 @@ plt.savefig('data/top_5_attacks.png')
 print("Success: Top 5 chart saved to data/top_5_attacks.png")
 plt.show()
 
+df = pd.read_csv('data/advanced_triage_report.csv')
+
+plt.figure(figsize=(10, 6))
+plt.scatter(df['Duration_Sec'], df['Alert_Count'], 
+            c=(df['Triage_Level'].str.contains('HIGH|CRITICAL')), cmap='Reds', alpha=0.6)
+
+plt.title('Threat Velocity Analysis: Time vs. Volume')
+plt.xlabel('Attack Duration (Seconds)')
+plt.ylabel('Total Alerts per Location')
+plt.grid(True, linestyle='--', alpha=0.5)
+plt.savefig('data/velocity_analysis.png')
+plt.show()
     
