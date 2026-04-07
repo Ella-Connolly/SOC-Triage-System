@@ -7,7 +7,7 @@ header = ['Summary', 'Signature', 'Timestamp', 'Type', 'Status', 'Direction', 'L
 
 alert_data = []
 
-for _ in range(50):
+for _ in range(400):
     row = [
         sc.alert.summary, 
         sc.alert.signature_name, 
