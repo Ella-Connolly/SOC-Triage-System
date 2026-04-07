@@ -17,11 +17,17 @@ plt.savefig('data/priority_chart.png')
 print("Success: Chart saved to data/priority_chart.png")
 plt.show()
 
-# per location severity
-plt.figure()
-sns.barplot(x='Location', y='Severity', data=df)
+#show only top 10 locations by severity (when we switched to 400 logs it lagged systems)
+top_locations = df.sort_values(by='Severity', ascending=False).head(10)
+
+plt.figure(figsize=(10, 6))
+sns.barplot(x='Location', y='Severity', data=top_locations)
+
 plt.xticks(rotation=45)
-plt.title("Severity by Location")
+plt.title("Top 10 Locations by Severity")
+plt.tight_layout()
+plt.savefig('data/top_severity_locations.png')
+print("Success: Top severity chart saved.")
 plt.show()
 
 top_5 = df.sort_values(by='Alert_Count', ascending=False).head(5)
@@ -39,16 +45,18 @@ plt.savefig('data/top_5_attacks.png')
 print("Success: Top 5 chart saved to data/top_5_attacks.png")
 plt.show()
 
-df = pd.read_csv('data/advanced_triage_report.csv')
+df_detected = pd.read_csv('data/detected_alerts.csv')
 
-plt.figure(figsize=(10, 6))
-plt.scatter(df['Duration_Sec'], df['Alert_Count'], 
-            c=(df['Triage_Level'].str.contains('HIGH|CRITICAL')), cmap='Reds', alpha=0.6)
+threat_counts = df_detected['Threat_Type'].value_counts()
 
-plt.title('Threat Velocity Analysis: Time vs. Volume')
-plt.xlabel('Attack Duration (Seconds)')
-plt.ylabel('Total Alerts per Location')
-plt.grid(True, linestyle='--', alpha=0.5)
-plt.savefig('data/velocity_analysis.png')
+plt.figure(figsize=(8,6))
+plt.bar(threat_counts.index, threat_counts.values)
+
+plt.title("Threat Classification Distribution")
+plt.xlabel("Threat Type")
+plt.ylabel("Number of Events")
+plt.xticks(rotation=30)
+
+plt.savefig('data/threat_distribution.png')
+print("Saved threat distribution chart")
 plt.show()
-    
