@@ -1,24 +1,40 @@
 import pandas as pd
 
-df = pd.read_csv('alert.csv')
+def score_alerts(file_path):
+    df = pd.read_csv(file_path)
 
-summary = df.groupby('Location').size().reset_index(name='Alert_Count')
+    severity_counter = {
+    "NONE": 1,
+    "LOW_CONFIDENCE_ATTACK": 2,
+    "MEDIUM_CONFIDENCE_ATTACK": 4,
+    "HIGH_CONFIDENCE_ATTACK": 6
+    }
 
-priorities = []
+    df['Severity'] = df['Threat_Type'].map(severity_counter)
 
-for count in summary['Alert_Count']:
-    if count > 3:
-        priorities.append('HIGH')
-    else:
-        priorities.append('Low/Medium')
+    summary = df.groupby('Location').agg({'Severity': 'sum','Threat_Type': 'count'}).rename(columns={'Threat_Type': 'Alert_Count'}).reset_index()
 
-summary['Priority'] = priorities
+    def assign_priority(score):
+        if score >= 15:
+            return "HIGH"
+        elif score >= 5:
+            return "MEDIUM"
+        else:
+            return "LOW"
 
-summary = summary.sort_values(by='Priority')
+    summary['Priority'] = summary['Severity'].apply(assign_priority)
 
-print("--- SOC TRIAGE REPORT ---")
-print(summary)
+    summary = summary.sort_values(by='Severity', ascending=False)
 
-summary.to_csv('final_triage_report.csv', index=False)
+    return summary
 
-print("\nSuccess: Triage report saved as final_triage_report.csv")
+
+if __name__ == "__main__":
+    summary = score_alerts('data/detected_alerts.csv')
+
+    print("--- SOC TRIAGE REPORT ---")
+    print(summary)
+
+    summary.to_csv('data/final_triage_report.csv', index=False)
+
+    print("\nSuccess: Triage report saved.")
